@@ -6,6 +6,7 @@ use App\Imports\CustomerImport;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Models\Customer;
 
 class CustomerController extends Controller
 {
@@ -37,6 +38,29 @@ class CustomerController extends Controller
                 'errors' => $e->errors(),
                 'message' => 'Validation failed. Please check the file and try again.'
             ], 422);
+        }
+    }
+
+    public function importManualData(Request $request)
+    {
+        try {
+            $validatedData = $request->validate([
+                'first_name' => 'required',
+                'last_name' => 'required',
+                'email' => 'required',
+                'phone' => 'required',
+            ]);
+
+            $customer = Customer::create($validatedData);
+
+            return response()->json([
+                'message' => 'Customer created successfully',
+                'customer' => $customer,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 400);
         }
     }
 }
