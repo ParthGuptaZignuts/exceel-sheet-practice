@@ -16,12 +16,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 
 Route::controller(CustomerController::class)->prefix('customer')->group(function () {
     Route::post('file','importExcelData');
     Route::post('manual','importManualData');
     Route::post('mail','sendMail');
+    Route::get('all', 'index'); 
 });
+
+

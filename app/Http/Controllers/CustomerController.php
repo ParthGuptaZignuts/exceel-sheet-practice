@@ -78,7 +78,7 @@ class CustomerController extends Controller
             ]);
 
             $existing = Customer::where('email', $validate['email'])->first();
-            
+
             $details = [
                 'first_name' => $validate['first_name'],
                 'last_name' => $validate['last_name'],
@@ -108,6 +108,48 @@ class CustomerController extends Controller
             return response()->json([
                 'message' => $e->getMessage()
             ], 400);
+        }
+    }
+
+    public function index(Request $request)
+    {
+
+        try {
+
+            $validate = $request->validate([
+                'ids' => 'sometimes|array',
+            ]);
+
+            if ($request->has('ids')) {
+                $customers = Customer::whereIn('id', $validate['ids'])->get();
+
+                foreach ($customers as $customer) {
+                $details = [
+                    'first_name' => $customer->first_name,
+                    'last_name' => $customer->last_name,
+                    'email' => $customer->email,
+                    'phone' => $customer->phone
+                ];
+                Mail::to($customer->email)->send(new Testing($details));
+            }
+                
+
+                return response()->json([
+                    "message" => "Retrieving all customers...",
+                    "customers" => $customers,
+                ], 200);
+            } else {
+                $customers = Customer::all();
+                return response()->json([
+                    "message" => "Retrieving all customers...",
+                    "customers" => $customers,
+                ], 200);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                "message" => "An error occurred while retrieving customers.",
+                "error" => $e->getMessage(),
+            ], 500);
         }
     }
 }
