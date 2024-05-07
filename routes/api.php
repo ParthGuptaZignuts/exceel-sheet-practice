@@ -23,4 +23,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::controller(CustomerController::class)->prefix('customer')->group(function () {
     Route::post('file','importExcelData');
     Route::post('manual','importManualData');
+    Route::post('mail','sendMail');
 });
