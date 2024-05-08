@@ -25,6 +25,7 @@ Route::controller(CustomerController::class)->prefix('customer')->group(function
     Route::post('manual','importManualData');
     Route::post('mail','sendMail');
     Route::get('all', 'index'); 
+    Route::get('filterAndPaginataion', 'filterAndPaginataion');
 });
 
 
